@@ -152,7 +152,7 @@ class BriefClientInfo:
 
 if __name__ == "__main__":
     try:
-        client_full = Client(1, "Ivanov", "Ivan", "Ivanovich", "123456", "AA")
+        client_full = Client(1, "Ivanov", "Ivan", "Ivanovich", "123456", "1234")
         client_full.display_client_info()
 
         print("\nBrief Client Info:")
@@ -160,7 +160,7 @@ if __name__ == "__main__":
 
         print("\n")
 
-        client_from_str = Client("2, Petrov, Petr, Petrovich, 654321, BB")
+        client_from_str = Client("2, Petrov, Petr, Petrovich, 654321, 1234")
         client_from_str.display_client_info()
 
         print("\nBrief Client Info:")
@@ -168,7 +168,7 @@ if __name__ == "__main__":
 
         print("\n")
 
-        json_data = '{"client_id": 3, "last_name": "Sidorov", "first_name": "Sidr", "middle_name": "Sidorovich", "passport_number": "987654", "passport_series": "CC"}'
+        json_data = '{"client_id": 3, "last_name": "Sidorov", "first_name": "Sidr", "middle_name": "Sidorovich", "passport_number": "987654", "passport_series": "1223"}'
         client_from_json = Client(json_data)
         client_from_json.display_client_info()
 
