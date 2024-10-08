@@ -5,7 +5,7 @@ class Client:
     def __init__(self, *args):
         if len(args) == 1:
             if isinstance(args[0], str):
-                try:
+                try:                   
                     if args[0].startswith('{') and args[0].endswith('}'):
                         self._from_json(args[0])
                     else:
@@ -25,6 +25,7 @@ class Client:
         else:
             raise ValueError("Invalid constructor arguments.")
 
+
     def _from_string(self, client_str):
         parts = client_str.split(',')
         if len(parts) != 6:
@@ -36,6 +37,7 @@ class Client:
         self.__middle_name = Client.validate_name(middle_name)
         self.__passport_number = Client.validate_passport_number(passport_number)
         self.__passport_series = Client.validate_passport_series(passport_series)
+
 
     def _from_json(self, json_str):
         data = json.loads(json_str)
@@ -67,7 +69,6 @@ class Client:
     def get_passport_series(self):
         return self.__passport_series
 
-    
     def set_client_id(self, client_id):
         self.__client_id = Client.validate_client_id(client_id)
 
@@ -93,6 +94,10 @@ class Client:
         print(f"Middle Name: {self.__middle_name}")
         print(f"Passport Number: {self.__passport_number}")
         print(f"Passport Series: {self.__passport_series}")
+
+    def display_brief_client_info(self):
+        brief_info = BriefClientInfo(self)
+        brief_info.display()
 
     @staticmethod
     def validate_client_id(client_id):
@@ -121,16 +126,45 @@ class Client:
             return passport_series.upper()
         else:
             raise ValueError("Passport series must be a string of 2 alphabetic characters.")
+        
+
+class BriefClientInfo:
+    def __init__(self, client: Client):
+        self.last_name = client.get_last_name()
+        self.initials = f"{client.get_first_name()[0]}.{client.get_middle_name()[0]}."
+        self.client_id = client.get_client_id()
+        self.inn = self.generate_inn(client)
+        self.ogrn = self.generate_ogrn(client)
+
+    @staticmethod
+    def generate_inn(client):
+        return f"INN-{client.get_client_id():06d}"
+
+    @staticmethod
+    def generate_ogrn(client):
+        return f"OGRN-{client.get_client_id():010d}"
+
+    def display(self):
+        print(f"Client ID: {self.client_id}")
+        print(f"Full Name: {self.last_name} {self.initials}")
+        print(f"INN: {self.inn}")
+        print(f"OGRN: {self.ogrn}")
 
 if __name__ == "__main__":
     try:
         client_full = Client(1, "Ivanov", "Ivan", "Ivanovich", "123456", "AA")
         client_full.display_client_info()
 
+        print("\nBrief Client Info:")
+        client_full.display_brief_client_info()
+
         print("\n")
 
         client_from_str = Client("2, Petrov, Petr, Petrovich, 654321, BB")
         client_from_str.display_client_info()
+
+        print("\nBrief Client Info:")
+        client_from_str.display_brief_client_info()
 
         print("\n")
 
@@ -138,6 +172,8 @@ if __name__ == "__main__":
         client_from_json = Client(json_data)
         client_from_json.display_client_info()
 
+        print("\nBrief Client Info:")
+        client_from_json.display_brief_client_info()
+
     except ValueError as e:
         print(f"Error: {e}")
-
