@@ -1,2 +1,2 @@
 ER диаграмма
-[erd](diagrams/ERD.png)
+![erd](diagrams/ERD.png)
