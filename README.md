@@ -4,4 +4,4 @@ ER диаграмма
 
 Диаграмма классов
 
-
+![class_diagram](diagrams/Class_diagram.png)
