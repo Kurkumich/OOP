@@ -1,5 +1,6 @@
 # --*-- encoding: cp1251 --*--
 import json
+import yaml
 from decimal import Decimal
 from datetime import date
 import random
@@ -92,6 +93,29 @@ class Product(BriefProduct):
             'material': self.material,
             'product_code': self.product_code
         }, ensure_ascii=False, indent=4)
+    
+    @classmethod
+    def create_from_yaml(cls, yaml_string: str):
+        data = yaml.safe_load(yaml_string)  # Загружаем данные из YAML
+        return cls(
+            product_id=data.get('product_id'),
+            name=data['name'],
+            description=data['description'],
+            price=Decimal(data['price']),
+            stock_quantity=data['stock_quantity'],
+            material=data['material']
+        )
+    
+    def to_yaml(self) -> str:
+        return yaml.dump({
+            'product_id': self.product_id,
+            'name': self.name,
+            'description': self.description,
+            'price': str(self.price),
+            'stock_quantity': self.stock_quantity,
+            'material': self.material,
+            'product_code': self.product_code
+        }, allow_unicode=True)
 
     def __str__(self):
         return f"Product(productId={self.product_id}, name='{self.name}', description='{self.description}', price={self.price}, stockQuantity={self.stock_quantity}, material='{self.material}', productCode='{self.product_code}')"
@@ -107,6 +131,17 @@ if __name__ == "__main__":
             stock_quantity=1,
             material="Zoloto"
         )
+        print(product)
+
+        yaml_data = """
+            product_id: 1
+            name: Kolco
+            description: Krasivoe
+            price: "15000.00"
+            stock_quantity: 1
+            material: Zoloto
+             """
+        product = Product.create_from_yaml(yaml_data)
         print(product)
     except ValueError as e:
         print("Error:", e)
