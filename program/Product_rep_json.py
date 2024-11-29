@@ -54,3 +54,35 @@ class ProductRepJSON(Product):
         start_index = k * n
         end_index = start_index + n
         return products[start_index:end_index]
+
+    def sort_by_field(self, field: str) -> List[Product]:
+       
+        products = self.read_all()
+        try:
+            return sorted(products, key=lambda p: getattr(p, field))
+        except AttributeError:
+            raise ValueError(f"Поле {field} не существует в объекте Product.")
+
+    def update_product(self, product_id: int, updated_product: Product) -> None:
+        
+        products = self.read_all()
+        for i, product in enumerate(products):
+            if product.product_id == product_id:
+                updated_product.product_id = product_id  # Сохраняем ID оригинального продукта
+                products[i] = updated_product
+                self.write_all(products)
+                return
+        raise ValueError(f"Продукт с ID {product_id} не найден.")
+
+    def generate_new_id(self, products: List[Product]) -> int:
+       
+        existing_ids = {product.product_id for product in products}
+        new_id = 1
+        while new_id in existing_ids:
+            new_id += 1
+        return new_id
+
+    def get_count(self) -> int:
+            
+            products = self.read_all()
+            return len(products)
