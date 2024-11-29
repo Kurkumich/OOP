@@ -28,3 +28,29 @@ class ProductRepJSON(Product):
                 json.dump(data, file, ensure_ascii=False, indent=4)
         except Exception as e:
             print(f"Ошибка записи в файл {self.file_path}: {e}")
+
+    def add_product(self, product: Product) -> None:
+        products = self.read_all()
+        product.product_id = self.generate_new_id(products)
+        products.append(product)
+        self.write_all(products)
+
+    def delete_product(self, product_id: int) -> None:
+        products = self.read_all()
+        products = [product for product in products if product.product_id != product_id]
+        self.write_all(products)
+
+    def get_by_id(self, product_id: int) -> Product:
+       
+        products = self.read_all()
+        for product in products:
+            if product.product_id == product_id:
+                return product
+        raise ValueError(f"Продукт с ID {product_id} не найден.")
+
+    def get_k_n_short_list(self, k: int, n: int) -> List[Product]:
+        
+        products = self.read_all()
+        start_index = k * n
+        end_index = start_index + n
+        return products[start_index:end_index]
