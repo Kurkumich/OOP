@@ -20,3 +20,11 @@ class ProductRepJSON(Product):
         except json.JSONDecodeError as e:
             print(f"Ошибка декодирования JSON: {e}")
             return []
+
+    def write_all(self, products: List[Product]) -> None:
+        try:
+            data = [json.loads(product.to_json()) for product in products]
+            with open(self.file_path, "w", encoding="utf-8") as file:
+                json.dump(data, file, ensure_ascii=False, indent=4)
+        except Exception as e:
+            print(f"Ошибка записи в файл {self.file_path}: {e}")
