@@ -10,16 +10,11 @@ from BriefProduct import BriefProduct
 class Product(BriefProduct):
     def __init__(self, product_id: int = None, name: str = "", description: str = "", price: Decimal = Decimal(0), 
                  stock_quantity: int = 0, material: str = "", product_code: str = None):
-        self.product_id = product_id or self.generate_product_id()
-        super().__init__(name, price, product_code or self.generate_product_code(material))
+        self.product_id = product_id
+        super().__init__(name, price, product_code)
         self.description = description
         self.stock_quantity = stock_quantity
         self.material = material
-
-    @staticmethod
-    def generate_product_id():
-        """Генерация уникального идентификатора продукта."""
-        return random.randint(100000, 999999)
 
     @property
     def description(self):
@@ -82,7 +77,19 @@ class Product(BriefProduct):
             stock_quantity=data['stock_quantity'],
             material=data['material']
         )
-
+    
+    @classmethod
+    def create_from_dict(cls, data: dict):
+        return cls(
+            product_id=data.get('product_id'),
+            name=data['name'],
+            description=data['description'],
+            price=Decimal(data['price']),
+            stock_quantity=data['stock_quantity'],
+            material=data['material'],
+            product_code=data.get('product_code')
+        )
+    
     def to_json(self) -> str:
         return json.dumps({
             'product_id': self.product_id,
@@ -120,6 +127,16 @@ class Product(BriefProduct):
     def __str__(self):
         return f"Product(productId={self.product_id}, name='{self.name}', description='{self.description}', price={self.price}, stockQuantity={self.stock_quantity}, material='{self.material}', productCode='{self.product_code}')"
 
+    def to_dict(self) -> dict:
+            return {
+                "product_id": self.product_id,
+                "name": self.name,
+                "description": self.description,
+                "price": str(self.price),  # Преобразуем Decimal в строку для корректного формата
+                "stock_quantity": self.stock_quantity,
+                "material": self.material,
+                "product_code": self.product_code
+            }
 
 if __name__ == "__main__":
     try:
@@ -129,19 +146,9 @@ if __name__ == "__main__":
             description="Krasivoe",
             price=Decimal("15000.00"),
             stock_quantity=1,
-            material="Zoloto"
+            material="Zoloto",
+            product_code = "1234567"
         )
-        print(product)
-
-        yaml_data = """
-            product_id: 1
-            name: Kolco
-            description: Krasivoe
-            price: "15000.00"
-            stock_quantity: 1
-            material: Zoloto
-             """
-        product = Product.create_from_yaml(yaml_data)
         print(product)
     except ValueError as e:
         print("Error:", e)
