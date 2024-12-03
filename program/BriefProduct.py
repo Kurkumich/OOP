@@ -1,4 +1,3 @@
-# --*-- encoding: cp1251 --*--
 import json
 from decimal import Decimal, InvalidOperation
 import random
@@ -8,10 +7,22 @@ class BriefProduct:
     def __init__(self, name: str, price: Decimal, product_code: str = None):
         self.name = name
         self.price = price 
-        self.product_code = product_code or self.generate_product_code()
+        self.product_code = product_code  
 
-    @staticmethod
-    def generate_product_code(name: str):
+    @property
+    def product_code(self):
+        return self._product_code
+
+    @product_code.setter
+    def product_code(self, value: str):
+        if value is None:
+            value = self._generate_product_code(self.name)
+        elif not isinstance(value, str) or len(value) < 7:
+            raise ValueError("Product code must be a string of at least 7 characters.")
+
+        self._product_code = value
+
+    def _generate_product_code(self, name: str):
         name_part = name[:3].upper()
         unique_part = ''.join(random.choices(string.ascii_uppercase + string.digits, k=4))
         return f"{name_part}{unique_part}"
